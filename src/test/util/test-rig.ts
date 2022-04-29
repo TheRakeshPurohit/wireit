@@ -5,6 +5,7 @@
  */
 
 import * as fs from 'fs/promises';
+import * as fss from 'fs';
 import * as pathlib from 'path';
 import {fileURLToPath} from 'url';
 import {spawn, type ChildProcessWithoutNullStreams} from 'child_process';
@@ -128,6 +129,20 @@ export class WireitTestRig extends FilesystemTestRig {
     opts?: {cwd?: string; env?: Record<string, string | undefined>}
   ): ExecResult {
     this.assertState('running');
+    console.log(
+      '================= root',
+      fss.readFileSync(
+        pathlib.join(repoRoot, 'node_modules', '.bin', 'wireit.cmd'),
+        'utf8'
+      )
+    );
+    console.log(
+      '================= temp',
+      fss.readFileSync(
+        pathlib.join(this.temp, 'node_modules', '.bin', 'wireit.cmd'),
+        'utf8'
+      )
+    );
     const cwd = this.#resolve(opts?.cwd ?? '.');
     const result = new ExecResult(command, cwd, {
       // We hard code the parallelism here because by default we infer a value
@@ -222,6 +237,7 @@ class ExecResult {
     cwd: string,
     env: Record<string, string | undefined>
   ) {
+    console.log({env});
     this.#child = spawn(command, {
       cwd,
       shell: true,

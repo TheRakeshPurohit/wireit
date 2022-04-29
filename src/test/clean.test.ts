@@ -277,7 +277,7 @@ test(
   })
 );
 
-test(
+test.only(
   'errors if cleaning output outside of the package',
   timeout(async ({rig}) => {
     const cmdA = await rig.newCommand();

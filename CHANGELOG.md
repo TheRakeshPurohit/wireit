@@ -6,7 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## Unreleased -->
+## [0.14.7] - 2024-08-05
+
+- When GitHub caching fails to initialize, more information is now shown about
+  the error, and it is no longer fatal.
+
+## [0.14.6] - 2024-08-05
+
+### Added
+
+- Added support for the `v2` version of the
+  `google/wireit@setup-github-actions-caching` action, which provides improved
+  security. All users are advised to upgrade to
+  `google/wireit@setup-github-actions-caching/v2`.
 
 ## [0.14.5] - 2024-07-08
 
@@ -605,7 +617,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Initial release.
 
-[unreleased]: https://github.com/google/wireit/compare/v0.14.5...HEAD
+[unreleased]: https://github.com/google/wireit/compare/v0.14.7...HEAD
+[0.14.7]: https://github.com/google/wireit/compare/v0.14.6...v0.14.7
+[0.14.6]: https://github.com/google/wireit/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/google/wireit/compare/v0.14.4...v0.14.5
 [0.14.4]: https://github.com/google/wireit/compare/v0.14.3...v0.14.4
 [0.14.3]: https://github.com/google/wireit/compare/v0.14.2...v0.14.3

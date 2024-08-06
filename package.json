@@ -1,6 +1,6 @@
 {
   "name": "wireit",
-  "version": "0.14.5",
+  "version": "0.14.7",
   "description": "Upgrade your npm scripts to make them smarter and more efficient",
   "author": "Google LLC",
   "license": "Apache-2.0",
@@ -422,7 +422,7 @@
     "jsonc-parser": "^3.0.0",
     "jsonschema": "^1.4.0",
     "pnpm": "^9.4.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.3.3",
     "selfsigned": "^2.0.1",
     "typescript": "^5.2.2",
     "uvu": "^0.5.3",

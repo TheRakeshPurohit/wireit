@@ -5,40 +5,66 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   tests:
     strategy:
-      # We support Node Current, LTS, and Maintenance. See
-      # https://github.com/nodejs/release#release-schedule for release schedule
+      # NODE POLICY
       #
-      # We test all supported Node versions on Linux, and the oldest and newest
-      # on macOS/Windows. See
+      # We always support Node Current, LTS, and Maintenance releases. See
+      # https://github.com/nodejs/release#release-schedule for the release
+      # schedule.
+      #
+      # We additionally support Node End-of-Life releases as is practical and
+      # reasonable on a case-by-case basis. If we decide it is worth dropping
+      # support for some Node version, it will be accompanied by a wireit
+      # semver major release.
+      #
+      # OS POLICY
+      #
+      # The oldest Node is tested with the oldest OS runner images, while
+      # everything else is tested with the latest. See:
       # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
-      # for the latest available images.
       matrix:
         include:
-          # Maintenance
+          # Node EOL (Oldest)
+          #   on Linux/Mac/Windows (Oldest)
           - node: 18
             os: ubuntu-22.04
+            os-name: Linux
           - node: 18
             os: macos-14
+            os-name: Mac
           - node: 18
             os: windows-2022
+            os-name: Windows
 
-          # LTS
+          # Node LTS (All Active & Maintenance)
+          #   on Linux (Latest)
           - node: 20
-            os: ubuntu-22.04
+            os: ubuntu-24.04
+            os-name: Linux
+          - node: 22
+            os: ubuntu-24.04
+            os-name: Linux
+          - node: 24
+            os: ubuntu-24.04
+            os-name: Linux
 
-          # Current
-          - node: 22
-            os: ubuntu-22.04
-          - node: 22
-            os: macos-14
-          - node: 22
-            os: windows-2022
+          # Node Current
+          #   on Linux/Mac/Windows (Latest)
+          - node: 25
+            os: ubuntu-24.04
+            os-name: Linux
+          - node: 25
+            os: macos-26
+            os-name: Mac
+          - node: 25
+            os: windows-2025
+            os-name: Windows
 
       # Allow all matrix configurations to complete, instead of cancelling as
       # soon as one fails. Useful because we often have different kinds of
       # failures depending on the OS.
       fail-fast: false
 
+    name: 'Node ${{ matrix.node}} / ${{ matrix.os-name }}'
     # Sometimes windows is far slower than the other OSs. Give it enough
     # time to complete if it's going to.
     timeout-minutes: 40
@@ -69,17 +95,3 @@ jobs:
       - run: xvfb-run -a npm test
         if: runner.os == 'Linux'
       - run: npm run test:cache-github-real
-
-  lint-and-format:
-    timeout-minutes: 5
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run format:check

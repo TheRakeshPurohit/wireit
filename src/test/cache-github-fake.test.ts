@@ -7,8 +7,9 @@
 import * as fs from 'fs/promises';
 import * as pathlib from 'path';
 import * as assert from 'uvu/assert';
-import * as crypto from 'crypto';
+import * as crypto from 'node:crypto';
 import * as selfsigned from 'selfsigned';
+import * as x509 from '@peculiar/x509';
 import {suite} from 'uvu';
 import {fileURLToPath} from 'url';
 import {ExitResult, WireitTestRig} from './util/test-rig.js';
@@ -23,7 +24,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = pathlib.dirname(__filename);
 const repoRoot = pathlib.resolve(__dirname, '..', '..');
 
-const SELF_SIGNED_CERT = selfsigned.generate(
+if (!x509.cryptoProvider.has('default')) {
+  // On Node 18, the x509 library which selfsigned uses fails to find a crypto
+  // provider because no default gets initialized (not sure why). Set a native
+  // default.
+  // TODO(aomarks) Do we really need to use TLS for this test?
+  console.log('Setting x509 default provider to node:crypto.webcrypto');
+  x509.cryptoProvider.set(crypto.webcrypto);
+}
+
+const SELF_SIGNED_CERT = await selfsigned.generate(
   [{name: 'commonName', value: 'localhost'}],
   // More recent versions of TLS require a larger minimum key size than the
   // default of this library (1024). Let's also upgrade from sha1 to sha256

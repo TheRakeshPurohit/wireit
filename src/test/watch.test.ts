@@ -4,29 +4,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {suite} from 'uvu';
-import * as assert from 'uvu/assert';
-import {rigTest} from './util/rig-test.js';
+import {test, describe} from 'node:test';
+import * as assert from 'node:assert';
+import {rigTestNode as rigTest} from './util/rig-test.js';
 import type {WireitTestRig} from './util/test-rig.js';
 
-tests('WIREIT_WATCH_STRATEGY=<default=event>');
+void describe('WIREIT_WATCH_STRATEGY=<default=event>', () => tests());
 
-tests('WIREIT_WATCH_STRATEGY=poll', (rig: WireitTestRig) => {
-  rig.env.WIREIT_WATCH_STRATEGY = 'poll';
-  // Default is 500, let's speed up the tests.
-  rig.env.WIREIT_WATCH_POLL_MS = '50';
-});
+void describe('WIREIT_WATCH_STRATEGY=poll', () =>
+  tests((rig: WireitTestRig) => {
+    rig.env.WIREIT_WATCH_STRATEGY = 'poll';
+    // Default is 500, let's speed up the tests.
+    rig.env.WIREIT_WATCH_POLL_MS = '50';
+  }));
 
 function tests(
-  suiteName: string,
   // TODO(aomarks) There should be a better way to prepare a rig without having
   // to remember to call it in every test case. We should refactor to use the
   // node test runner, maybe can do this as part of that.
   prepareRig: (rig: WireitTestRig) => void | Promise<void> = () => {},
 ) {
-  const test = suite<object>(suiteName);
-
-  test(
+  void test(
     'runs initially and waits for SIGINT',
     rigTest(
       async ({rig}) => {
@@ -80,7 +78,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'runs again when input file changes after execution',
     rigTest(
       async ({rig}) => {
@@ -131,7 +129,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'runs again when new input file created',
     rigTest(
       async ({rig}) => {
@@ -182,7 +180,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'runs again when input file deleted',
     rigTest(
       async ({rig}) => {
@@ -231,7 +229,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'runs again when input file changes in the middle of execution',
     rigTest(async ({rig}) => {
       await prepareRig(rig);
@@ -279,7 +277,7 @@ function tests(
     }),
   );
 
-  test(
+  void test(
     'reloads config when package.json changes and runs again',
     rigTest(
       async ({rig}) => {
@@ -340,7 +338,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'changes are detected in same-package dependencies',
     rigTest(
       async ({rig}) => {
@@ -424,7 +422,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'changes are detected in cross-package dependencies',
     rigTest(
       async ({rig}) => {
@@ -514,7 +512,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'error from script is not fatal',
     rigTest(
       async ({rig}) => {
@@ -567,7 +565,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'recovers from analysis errors',
     rigTest(
       async ({rig}) => {
@@ -675,7 +673,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'watchers understand negations',
     rigTest(
       async ({rig}) => {
@@ -739,7 +737,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     '.dotfiles are watched',
     rigTest(
       async ({rig}) => {
@@ -787,7 +785,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'package-lock.json files are watched',
     rigTest(
       async ({rig}) => {
@@ -833,7 +831,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'debounces when two scripts are watching the same file',
     rigTest(
       async ({rig}) => {
@@ -900,7 +898,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'strips leading slash from watch paths',
     rigTest(
       async ({rig}) => {
@@ -947,7 +945,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'script fails but still emits output consumed by another script',
     rigTest(
       async ({rig}) => {
@@ -1028,7 +1026,7 @@ function tests(
     ),
   );
 
-  test(
+  void test(
     'input file changes but the contents are the same',
     rigTest(
       async ({rig}) => {
@@ -1068,6 +1066,4 @@ function tests(
       {flaky: true},
     ),
   );
-
-  test.run();
 }

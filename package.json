@@ -392,7 +392,7 @@
       "output": []
     },
     "test:watch": {
-      "command": "uvu lib/test \"^watch\\.test\\.js$\"",
+      "command": "node --test --test-reporter=dot lib/test/watch.test.js",
       "env": {
         "NODE_OPTIONS": "--enable-source-maps"
       },
@@ -417,7 +417,7 @@
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/brace-expansion": "^1.1.2",
-    "@types/node": "^22.5.4",
+    "@types/node": "^18.19.130",
     "@types/node-forge": "^1.3.0",
     "@types/proper-lockfile": "^4.1.2",
     "@types/selfsigned": "^2.0.1",
